@@ -22,6 +22,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -58,6 +59,9 @@ class AnimatableActivity : ComponentActivity() {
                 Animatable(0.dp, Dp.VectorConverter)
             }
 
+            var padding by remember {
+                mutableStateOf(anim.value)
+            }
             val density = exponentialDecay<Dp>()
 //            val density = rememberSplineBasedDecay<Dp>()
             LaunchedEffect(key1 = big) {
@@ -71,10 +75,12 @@ class AnimatableActivity : ComponentActivity() {
 //                anim.animateTo(offsetSize, tween(easing = FastOutLinearInEasing))
 //                anim.animateTo(48.dp, spring(0.1f,Spring.DampingRatioMediumBouncy),2000.dp)
 //                anim.animateTo(offsetSize, tween(easing = CubicBezierEasing(0.1f,4f,1f,1f)))
-                anim.animateDecay(1000.dp,density)
+                anim.animateDecay(1000.dp,density){
+                    padding=value
+                }
             }
 
-//            Box(modifier = Modifier.fillMaxSize()) {
+            Row(modifier = Modifier.fillMaxSize()) {
                 Box(modifier = Modifier
                     .padding(0.dp, anim.value, 0.dp, 0.dp)
 //                    .offset(x = 100.dp, y =anim.value)
@@ -83,7 +89,14 @@ class AnimatableActivity : ComponentActivity() {
                     .clickable {
                         big = !big
                     })
-//            }
+                Box(modifier = Modifier
+                    .padding(0.dp, padding, 0.dp, 0.dp)
+                    .background(Color.Red)
+                    .size(100.dp)
+                    .clickable {
+                        big = !big
+                    })
+            }
         }
     }
 }
